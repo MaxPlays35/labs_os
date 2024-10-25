@@ -4,16 +4,16 @@
 
 #include <fstream>
 
-#include "../src/parent.h"
+#include "parent.h"
 #include "../src/utils.h"
 #include "gtest/gtest.h";
 
 TEST(BASE_TEST, TEST1) {
-    std::string fileInput("test_input.txt");
-    std::string fileOutput("test_output.txt");
-    std::string fileResult("test_result.txt");
+    const std::string fileInput("test_input.txt");
+    const std::string fileOutput("test_output.txt");
+    const std::string fileResult("test_result.txt");
 
-    std::array<std::string, 7> testData {
+    const std::array<std::string, 7> testData {
         "test_result.txt\n",
         "Hello there.\n",
         "Bad string\n",
@@ -23,13 +23,13 @@ TEST(BASE_TEST, TEST1) {
         "!\n"
     };
 
-    std::vector<std::string> expectedOutput {
+    const std::vector<std::string> expectedOutput {
         "Enter a name for file",
         "Verification failed",
         "Verification failed"
     };
 
-    std::vector<std::string> expectedResult {
+    const std::vector<std::string> expectedResult {
         "Hello there.",
         "Hi hi;",
         "Some valid string;"
@@ -56,8 +56,8 @@ TEST(BASE_TEST, TEST1) {
     std::vector<std::string> output = ReadFile(fileCout);
     std::vector<std::string> result = ReadFile(fileRes);
 
-    ASSERT_TRUE(CheckEqualsOfStrings(output, expectedOutput));
-    ASSERT_TRUE(CheckEqualsOfStrings(result, expectedResult));
+    EXPECT_TRUE(CheckEqualsOfStrings(output, expectedOutput));
+    EXPECT_TRUE(CheckEqualsOfStrings(result, expectedResult));
 
     if (std::filesystem::exists(fileInput)) {
         std::filesystem::remove(fileInput);

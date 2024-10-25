@@ -33,10 +33,10 @@ void ParentWork(std::istream & in, std::ostream & out) {
     if (child_pid == 0) {
         close(pipesP2C[1]);
         close(pipesC2P[0]);
-        dup2(pipesP2C[0], 0);
-        dup2(pipesC2P[1], 2);
+        dup2(pipesP2C[0], STDIN_FILENO);
+        dup2(pipesC2P[1], STDERR_FILENO);
 
-        auto child_path = "./child";
+        constexpr auto* child_path = "./child";
 
         if (execl(child_path, filename.c_str(), nullptr) == -1) {
             std::cerr << "Exec failed" << std::endl;
@@ -47,7 +47,7 @@ void ParentWork(std::istream & in, std::ostream & out) {
         close(pipesP2C[0]);
         close(pipesC2P[1]);
 
-        getline(in, str);
+        std::getline(in, str);
         while(std::getline(in, str)) {
             write(pipesP2C[1], (str + '\n').c_str(), str.size() + 1);
 

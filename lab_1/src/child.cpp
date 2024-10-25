@@ -8,10 +8,15 @@
 #include <sys/ioctl.h>
 
 int main(int argc, char* argv[]) {
-    FILE* file_old = fopen(argv[0], "w");
-    dup2(fileno(file_old), 1);
+    if (argc != 2) {
+        std::cerr << "Bad usage" << std::endl;
+        return -1;
+    }
 
-    int one = 1;
+    FILE* file_old = fopen(argv[0], "w");
+    dup2(fileno(file_old), STDOUT_FILENO);
+
+    constexpr int one = 1;
     int zero = 0;
 
     std::string str;
@@ -23,9 +28,9 @@ int main(int argc, char* argv[]) {
 
         if (str.ends_with('.') or str.ends_with(';')) {
             std::cout << str << std::endl;
-            write(2, &one, sizeof(one));
+            write(STDERR_FILENO, &one, sizeof(one));
         } else {
-            write(2, &zero, sizeof(zero));
+            write(STDERR_FILENO, &zero, sizeof(zero));
         }
     }
 

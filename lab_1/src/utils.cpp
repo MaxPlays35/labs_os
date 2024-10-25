@@ -17,7 +17,7 @@ std::vector<std::string> ReadFile(std::ifstream & in) {
     return result;
 }
 
-bool CheckEqualsOfStrings(std::vector<std::string> & current, std::vector<std::string> & expected) {
+bool CheckEqualsOfStrings(const std::vector<std::string> & current, const std::vector<std::string> & expected) {
     if (current.size() != expected.size()) {
         return false;
     }
