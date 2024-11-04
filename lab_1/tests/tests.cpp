@@ -71,3 +71,8 @@ TEST(BASE_TEST, TEST1) {
         std::filesystem::remove(fileResult);
     }
 }
+
+int main(int argc, char **argv) {
+    testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
+}
