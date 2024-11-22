@@ -11,42 +11,30 @@
 #include <sys/semaphore.h>
 #include <sys/stat.h>
 
+#include "sharedFile/SharedFile.h"
+#include "sharedMem/SharedMem.h"
+#include "sharedSem/SharedSem.h"
+
 const size_t kFileLength = 1024;
 
 void ParentWork(std::istream & in, std::ostream & out) {
     std::string str;
     std::string errors;
     std::string filename;
-    sem_t* sem1 = sem_open("/sync1", O_CREAT, 0644, 0);
-    sem_t* sem2 = sem_open("/sync2", O_CREAT, 0644, 0);
+
+    auto sem1 = SharedSem("/sync1");
+    auto sem2 = SharedSem("/sync2");
+
     int buffer = 0;
-
-    std::cout << errno << std::endl;
-
-
 
     out << "Enter a name for file" << std::endl;
     in >> filename;
 
-    auto file1 = shm_open("/tmp1.txt", O_CREAT | O_RDWR, 0644);
-    auto file2 = shm_open("/tmp2.txt", O_CREAT | O_RDWR, 0644);
+    auto file1 = SharedFile("/tmp1.txt");
+    auto file2 = SharedFile("/tmp2.txt");
 
-    struct stat mapstat;
-    fstat(file1, &mapstat);
-
-    if (mapstat.st_size < kFileLength) {
-        ftruncate(file1, kFileLength);
-    }
-
-    fstat(file2, &mapstat);
-
-    if (mapstat.st_size < kFileLength) {
-        ftruncate(file2, kFileLength);
-    }
-
-    char* bufferP2C = static_cast<char*>(mmap(nullptr, kFileLength, PROT_READ | PROT_WRITE, MAP_SHARED, file1, 0));
-    char* bufferC2P = static_cast<char*>(mmap(nullptr, 1, PROT_READ | PROT_WRITE, MAP_SHARED, file2, 0));
-    std::cout << errno << std::endl;
+    auto bufferP2C = SharedMem(file1.getFd(), kFileLength);
+    auto bufferC2P = SharedMem(file2.getFd(), 1);
 
     int child_pid = fork();
 
@@ -72,32 +60,20 @@ void ParentWork(std::istream & in, std::ostream & out) {
                 break;
             }
 
-            strcpy(bufferP2C, str.c_str());
-            std::cout << *bufferP2C << std::endl;
-            sem_post(sem2);
-            sem_wait(sem1);
+            std::strcpy(bufferP2C.buffer, str.c_str());
+
+            sem2.post();
+            sem1.wait();
 
             if (str == "!") {
                 break;
             }
 
-            if (!bufferC2P[0]) {
-                out << static_cast<int>(bufferC2P[0]) << std::endl;
+            if (!bufferC2P.buffer[0]) {
                 out << "Verification failed" << std::endl;
             }
         }
     }
 
-    munmap(bufferP2C, kFileLength);
-    munmap(bufferC2P, 1);
-    close(file1);
-    close(file2);
-    sem_close(sem1);
-    sem_close(sem2);
-    close(file1);
-    sem_unlink("/sync1");
-    sem_unlink("/sync2");
-    shm_unlink("/tmp1.txt");
-    shm_unlink("/tmp2.txt");
     wait(nullptr);
 }

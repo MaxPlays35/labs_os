@@ -71,3 +71,61 @@ TEST(BASE_TEST, TEST1) {
         std::filesystem::remove(fileResult);
     }
 }
+
+TEST(BASE_TEST, EMPTY_TEST) {
+    const std::string fileInput("test_input.txt");
+    const std::string fileOutput("test_output.txt");
+    const std::string fileResult("test_result.txt");
+
+    const std::array<std::string, 2> testData {
+        "test_result.txt\n",
+        "!\n",
+    };
+
+    const std::vector<std::string> expectedOutput {
+        "Enter a name for file",
+    };
+
+    constexpr std::vector<std::string> expectedResult;
+
+    {
+        std::ofstream file(fileInput);
+
+        for (auto & string : testData) {
+            file << string;
+        }
+    }
+
+    {
+        std::ifstream fileCin(fileInput);
+        std::ofstream fileCout(fileOutput);
+
+        ParentWork(fileCin, fileCout);
+    }
+
+    std::ifstream fileCout(fileOutput);
+    std::ifstream fileRes(fileResult);
+
+    std::vector<std::string> output = ReadFile(fileCout);
+    std::vector<std::string> result = ReadFile(fileRes);
+
+    EXPECT_TRUE(CheckEqualsOfStrings(output, expectedOutput));
+    EXPECT_TRUE(CheckEqualsOfStrings(result, expectedResult));
+
+    if (std::filesystem::exists(fileInput)) {
+        std::filesystem::remove(fileInput);
+    }
+
+    if (std::filesystem::exists(fileOutput)) {
+        std::filesystem::remove(fileOutput);
+    }
+
+    if (std::filesystem::exists(fileResult)) {
+        std::filesystem::remove(fileResult);
+    }
+}
+
+int main(int argc, char **argv) {
+    testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
+}

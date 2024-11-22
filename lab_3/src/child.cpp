@@ -11,7 +11,11 @@
 #include <sys/semaphore.h>
 #include <sys/stat.h>
 
-extern int errno;
+#include "sharedFile/SharedFile.h"
+#include "sharedMem/SharedMem.h"
+#include "sharedSem/SharedSem.h"
+
+constexpr size_t kFileLength = 1024;
 
 int main(int argc, char* argv[]) {
     if (argc != 1) {
@@ -19,14 +23,15 @@ int main(int argc, char* argv[]) {
         return -1;
     }
 
-    sem_t* sem1 = sem_open("/sync1", O_CREAT, 0644, 0);
-    sem_t* sem2 = sem_open("/sync2", O_CREAT, 0644, 0);
+    auto sem1 = SharedSem("/sync1");
+    auto sem2 = SharedSem("/sync2");
 
-    auto file1 = shm_open("/tmp1.txt", O_CREAT | O_RDWR, 0644);
-    auto file2 = shm_open("/tmp2.txt", O_CREAT | O_RDWR, 0644);
+    auto file1 = SharedFile("/tmp1.txt");
+    auto file2 = SharedFile("/tmp2.txt");
 
-    char* bufferP2C = static_cast<char*>(mmap(nullptr, 1024, PROT_READ | PROT_WRITE, MAP_SHARED, file1, 0));
-    char* bufferC2P = static_cast<char*>(mmap(nullptr, 1, PROT_READ | PROT_WRITE, MAP_SHARED, file2, 0));
+    auto bufferP2C = SharedMem(file1.getFd(), kFileLength);
+    auto bufferC2P = SharedMem(file2.getFd(), 1);
+
     FILE* file_old = fopen(argv[0], "w");
     dup2(fileno(file_old), STDOUT_FILENO);
 
@@ -35,30 +40,28 @@ int main(int argc, char* argv[]) {
     int length = 0;
 
     while(true) {
-        sem_wait(sem2);
-        std::cerr << "Got from parent" << std::endl;
+        sem2.wait();
+        // std::cerr << "Got from parent" << std::endl;
 
-        if (bufferP2C[0] == '!') {
-            sem_post(sem1);
+        if (bufferP2C.buffer[0] == '!') {
+            sem1.post();
             break;
         }
 
-        std::string temp(bufferP2C, strlen(bufferP2C));
-        std::cerr << temp << std::endl;
+        std::string temp(bufferP2C.buffer, std::strlen(bufferP2C.buffer));
+        // std::cerr << temp << std::endl;
 
         if (temp.ends_with('.') or temp.ends_with(';')) {
             std::cout << temp << std::endl;
-            bufferC2P[0] = one;
+            bufferC2P.buffer[0] = one;
         } else {
-            bufferC2P[0] = zero;
+            bufferC2P.buffer[0] = zero;
         }
 
-        std::cerr << "Release to parent" << std::endl;
-        sem_post(sem1);
+        // std::cerr << "Release to parent" << std::endl;
+        sem1.post();
     }
 
     close(fileno(file_old));
-    munmap(bufferP2C, 1024);
-    munmap(bufferC2P, 1);
     return 0;
 }
