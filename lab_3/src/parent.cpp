@@ -11,27 +11,26 @@
 #include <sys/semaphore.h>
 #include <sys/stat.h>
 
+#include "consts/Consts.h"
 #include "sharedFile/SharedFile.h"
 #include "sharedMem/SharedMem.h"
 #include "sharedSem/SharedSem.h"
 
-const size_t kFileLength = 1024;
-
-void ParentWork(std::istream & in, std::ostream & out) {
+void ParentWork(std::istream &in, std::ostream &out) {
     std::string str;
     std::string errors;
     std::string filename;
 
-    auto sem1 = SharedSem("/sync1");
-    auto sem2 = SharedSem("/sync2");
+    auto sem1 = SharedSem(kSemParentName);
+    auto sem2 = SharedSem(kSemChildName);
 
     int buffer = 0;
 
     out << "Enter a name for file" << std::endl;
     in >> filename;
 
-    auto file1 = SharedFile("/tmp1.txt");
-    auto file2 = SharedFile("/tmp2.txt");
+    auto file1 = SharedFile(kParentFilename);
+    auto file2 = SharedFile(kChildFilename);
 
     auto bufferP2C = SharedMem(file1.getFd(), kFileLength);
     auto bufferC2P = SharedMem(file2.getFd(), 1);
@@ -44,34 +43,32 @@ void ParentWork(std::istream & in, std::ostream & out) {
     }
 
     if (child_pid == 0) {
-        constexpr auto* child_path = "./lab_3_child";
+        constexpr auto *child_path = "./lab_3_child";
 
         if (execl(child_path, filename.c_str(), nullptr) == -1) {
             std::cerr << "Exec failed" << std::endl;
             std::cerr << strerror(errno) << std::endl;
             exit(EXIT_FAILURE);
         }
+    }
 
-    } else {
+    std::getline(in, str);
+    while (true) {
+        if (!std::getline(in, str)) {
+            break;
+        }
 
-        std::getline(in, str);
-        while(true) {
-            if (!std::getline(in, str)) {
-                break;
-            }
+        std::strcpy(bufferP2C.buffer, str.c_str());
 
-            std::strcpy(bufferP2C.buffer, str.c_str());
+        sem2.post();
+        sem1.wait();
 
-            sem2.post();
-            sem1.wait();
+        if (str == "!") {
+            break;
+        }
 
-            if (str == "!") {
-                break;
-            }
-
-            if (!bufferC2P.buffer[0]) {
-                out << "Verification failed" << std::endl;
-            }
+        if (!bufferC2P.buffer[0]) {
+            out << "Verification failed" << std::endl;
         }
     }
 

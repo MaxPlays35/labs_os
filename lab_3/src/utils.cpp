@@ -11,7 +11,7 @@ std::vector<std::string> ReadFile(std::ifstream & in) {
     std::string buffer;
 
     while (std::getline(in, buffer)) {
-        result.push_back(buffer);
+        result.push_back(std::move(buffer));
     }
 
     return result;

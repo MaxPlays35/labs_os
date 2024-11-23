@@ -6,12 +6,12 @@
 
 #include "parent.h"
 #include "../src/utils.h"
-#include "gtest/gtest.h";
+#include "gtest/gtest.h"
 
 TEST(BASE_TEST, TEST1) {
-    const std::string fileInput("test_input.txt");
-    const std::string fileOutput("test_output.txt");
-    const std::string fileResult("test_result.txt");
+    constexpr std::string fileInput("test_input.txt");
+    constexpr std::string fileOutput("test_output.txt");
+    constexpr std::string fileResult("test_result.txt");
 
     const std::array<std::string, 7> testData {
         "test_result.txt\n",

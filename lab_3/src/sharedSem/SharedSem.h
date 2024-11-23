@@ -8,13 +8,13 @@
 class SharedSem {
 private:
     sem_t* sem_;
-    std::string name_;
+    const std::string name_;
 public:
-    explicit SharedSem(const std::string & name);
+    explicit SharedSem(std::string name);
 
-    void wait() const;
+    void wait();
 
-    void post() const;
+    void post();
 
     ~SharedSem();
 };

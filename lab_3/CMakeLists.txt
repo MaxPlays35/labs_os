@@ -4,7 +4,13 @@ project(lab_3)
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-add_library(${PROJECT_NAME}_lib src/parent.cpp src/parent.h src/utils.cpp src/utils.h src/sharedFile/SharedFile.cpp src/sharedFile/SharedFile.h src/sharedMem/SharedMem.cpp src/sharedMem/SharedMem.h src/sharedSem/SharedSem.cpp src/sharedSem/SharedSem.h)
+add_library(${PROJECT_NAME}_lib
+        src/parent.cpp src/parent.h
+        src/utils.cpp src/utils.h
+        src/sharedFile/SharedFile.cpp src/sharedFile/SharedFile.h
+        src/sharedMem/SharedMem.cpp src/sharedMem/SharedMem.h
+        src/sharedSem/SharedSem.cpp src/sharedSem/SharedSem.h
+        src/consts/Consts.h)
 add_executable(${PROJECT_NAME} main.cpp)
 add_executable(${PROJECT_NAME}_child src/child.cpp)
 

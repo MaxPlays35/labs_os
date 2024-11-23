@@ -7,7 +7,7 @@
 class SharedMem {
 public:
     char* buffer;
-    size_t size;
+    const size_t size;
 
     SharedMem(int fd, size_t size);
 

@@ -6,15 +6,15 @@
 
 #include <sys/fcntl.h>
 
-SharedSem::SharedSem(const std::string & name) : name_(name) {
+SharedSem::SharedSem(std::string name) : name_(std::move(name)) {
     sem_ = sem_open(name_.c_str(), O_CREAT, 0644, 0);
 }
 
-void SharedSem::wait() const {
+void SharedSem::wait() {
     sem_wait(sem_);
 }
 
-void SharedSem::post() const {
+void SharedSem::post() {
     sem_post(sem_);
 }
 

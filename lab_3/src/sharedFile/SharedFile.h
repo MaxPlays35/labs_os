@@ -7,9 +7,9 @@
 class SharedFile {
 private:
     int fd_;
-    std::string name_;
+    const std::string name_;
 public:
-    explicit SharedFile(const std::string & name);
+    explicit SharedFile(std::string name);
 
     int getFd() const;
 
