@@ -20,9 +20,13 @@ add_executable(${PROJECT_NAME}_dynamic src/dynamic/dynamic.cpp)
 target_link_libraries(${PROJECT_NAME} ${PROJECT_NAME}_first_lib)
 target_link_libraries(${PROJECT_NAME}_static ${PROJECT_NAME}_first_lib)
 
-add_executable(${PROJECT_NAME}_tests tests/tests.cpp)
+add_executable(${PROJECT_NAME}_test1 tests/test1.cpp)
+add_executable(${PROJECT_NAME}_test2 tests/test2.cpp)
 
-target_include_directories(${PROJECT_NAME}_tests PUBLIC "src")
-target_link_libraries(${PROJECT_NAME}_tests ${PROJECT_NAME}_first_lib gtest_main)
+target_include_directories(${PROJECT_NAME}_test1 PUBLIC "src")
+target_include_directories(${PROJECT_NAME}_test2 PUBLIC "src")
+target_link_libraries(${PROJECT_NAME}_test1 ${PROJECT_NAME}_first_lib gtest_main)
+target_link_libraries(${PROJECT_NAME}_test2 ${PROJECT_NAME}_second_lib gtest_main)
 
-add_test(NAME ${PROJECT_NAME}_tests COMMAND tests)
+add_test(NAME ${PROJECT_NAME}_test1 COMMAND tests)
+add_test(NAME ${PROJECT_NAME}_test2 COMMAND tests)
