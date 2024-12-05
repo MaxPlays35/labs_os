@@ -33,7 +33,7 @@ void dynamic(std::istream & in, std::ostream & out) {
         in >> option;
         switch (option) {
             case -1:
-                out << "Thank you for using program!\n";
+                out << "Exiting\n";
                 dlclose(lib);
                 return;
             case 0:

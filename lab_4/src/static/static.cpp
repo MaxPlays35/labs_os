@@ -16,19 +16,19 @@ void staticWork(std::istream & in, std::ostream & out) {
         in >> option;
         switch (option) {
             case -1:
-                out << "Thank you for using program!\n";
+                out << "Exiting\n";
                 return;
             case 1:
                 in >> argument;
                 out << "The result of calculation: " << pi(argument) << std::endl;
-            break;
+                break;
             case 2:
                 in >> argument;
                 out << "The result of translation: " << translation(argument) << std::endl;
-            break;
+                break;
             default:
                 out << "Invalid option!" << std::endl;
-            break;
+                break;
         }
     }
 }
