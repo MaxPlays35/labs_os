@@ -7,15 +7,15 @@
 #include <dlfcn.h>
 #include <iostream>
 
-typedef float(*piPointer)(int k);
+using piPointer = float(*)(int k);
 typedef std::string(*translationPtr)(long x);
 
-const inline std::string lib1 = "./liblab_4_first_lib.dylib";
-const inline std::string lib2 = "./liblab_4_second_lib.dylib";
+constexpr auto lib1 = "./liblab_4_first_lib.dylib";
+constexpr auto lib2 = "./liblab_4_second_lib.dylib";
 
 
 void dynamic(std::istream & in, std::ostream & out) {
-    void* lib = dlopen(lib1.c_str(), RTLD_LAZY);
+    void* lib = dlopen(lib1, RTLD_LAZY);
     if (!lib) {
         std::cerr << dlerror() << std::endl;
         return;
@@ -41,7 +41,7 @@ void dynamic(std::istream & in, std::ostream & out) {
                 dlclose(lib);
 
                 if (flag) {
-                    lib = dlopen(lib2.c_str(), RTLD_LAZY);
+                    lib = dlopen(lib2, RTLD_LAZY);
 
                     if (!lib) {
                         std::cerr << dlerror() << std::endl;
@@ -50,7 +50,7 @@ void dynamic(std::istream & in, std::ostream & out) {
 
                     std::cout << "Changed library to: " << lib2 << std::endl;
                 } else {
-                    lib = dlopen(lib2.c_str(), RTLD_LAZY);
+                    lib = dlopen(lib2, RTLD_LAZY);
 
                     if (!lib) {
                         std::cerr << dlerror() << std::endl;

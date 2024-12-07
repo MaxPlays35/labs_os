@@ -7,19 +7,19 @@
 
 #include "librarySecond/librarySecond.h"
 
-TEST(PI_FUNCTION, PI_TEST) {
+TEST(PiFunction, ShouldGivePiCorrectly) {
     EXPECT_NEAR(std::numbers::pi_v<float>, pi(1000000), 1e-3);
 }
 
-TEST(TRANSLATION_FUNCTION, FIRST_TEST) {
+TEST(TranslationFunction, ShouldTranslateOneToTernaryCorrectly) {
     EXPECT_EQ("1", translation(1));
 }
 
-TEST(TRANSLATION_FUNCTION, SECOND_TEST) {
+TEST(TranslationFunction, ShouldTranslateThreeToTernaryCorrectly) {
     EXPECT_EQ("10", translation(3));
 }
 
-TEST(TRANSLATION_FUNCTION, THIRD_TEST) {
+TEST(TranslationFunction, ShouldTranslateElevenToTernaryCorrectly) {
     EXPECT_EQ("102", translation(11));
 }
 

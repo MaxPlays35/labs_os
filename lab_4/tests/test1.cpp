@@ -7,22 +7,22 @@
 #include <gtest/gtest.h>
 
 #include "libraryFirst/libraryFirst.h"
-
-TEST(PI_FUNCTION, PI_TEST) {
+TEST(PiFunction, ShouldGivePiCorrectly) {
     EXPECT_NEAR(std::numbers::pi_v<float>, pi(1000000), 1e-5);
 }
 
-TEST(TRANSLATION_FUNCTION, FIRST_TEST) {
+TEST(TranslationFunction, ShouldTranslateOneToBinaryCorrectly) {
     EXPECT_EQ("1", translation(1));
 }
 
-TEST(TRANSLATION_FUNCTION, SECOND_TEST) {
+TEST(TranslationFunction, ShouldTranslateTwoToBinaryCorrectly) {
     EXPECT_EQ("10", translation(2));
 }
 
-TEST(TRANSLATION_FUNCTION, THIRD_TEST) {
+TEST(TranslationFunction, ShouldTranslateTenToBinaryCorrectly) {
     EXPECT_EQ("1010", translation(10));
 }
+
 
 int main(int argc, char **argv) {
     testing::InitGoogleTest(&argc, argv);
