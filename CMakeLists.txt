@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.29)
 project(labs_os)
 
 set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror=maybe-uninitialized")
 
@@ -19,3 +20,4 @@ enable_testing()
 
 add_subdirectory(lab_1)
 add_subdirectory(lab_3)
+add_subdirectory(cp)
