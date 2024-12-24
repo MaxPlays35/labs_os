@@ -5,10 +5,20 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_library(${PROJECT_NAME}_lib
-        src/memoryResource/MemoryResource.h
-        src/memoryResource/MemoryResource.cpp
+        src/simpleMemoryResource/SimpleMemoryResource.h
+        src/simpleMemoryResource/SimpleMemoryResource.cpp
+        src/macMemoryResource/MacMemoryResource.h
+        src/macMemoryResource/MacMemoryResource.cpp
         src/block/Block.h
-        src/block/Block.cpp)
+        src/block/Block.cpp
+        src/testClass/TestClass.h
+        src/testClass/TestClass.cpp
+        src/bench/Bench.h
+        src/bench/Bench.cpp
+        src/baseMemoryResource/BaseMemoryResource.h
+        src/baseMemoryResource/BaseMemoryResource.cpp
+        src/utils/Utils.h
+        src/utils/Utils.cpp)
 
 add_executable(${PROJECT_NAME} main.cpp)
 

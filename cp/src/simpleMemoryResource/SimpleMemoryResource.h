@@ -11,11 +11,12 @@
 #include <algorithm>
 #include <bits/memory_resource.h>
 
+#include "../baseMemoryResource/BaseMemoryResource.h"
 #include "../block/Block.h"
 
 using Page = std::unique_ptr<char[]>;
 
-class CustomMemoryResource : public std::pmr::memory_resource {
+class SimpleMemoryResource : public BaseMemoryResource {
     static constexpr size_t max_size = 4096;
     std::vector<Block> blocks_;
     std::vector<Page> pages_;
@@ -28,7 +29,7 @@ public:
 
     bool do_is_equal(const std::pmr::memory_resource & other) const noexcept override;
 
-    std::size_t get_allocated_memory() const;
+    std::size_t get_allocated_memory() const override;
 
-    std::size_t get_used_memory() const;
+    std::size_t get_used_memory() const override;
 };
