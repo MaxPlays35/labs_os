@@ -7,28 +7,24 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # Include FetchContent module
 include(FetchContent)
 
-# Fetch and add cpp-modern-kafka
+# Загрузка и сборка ZeroMQ
 FetchContent_Declare(
-        cpp-kafka
-        GIT_REPOSITORY https://github.com/mfontanini/cppkafka.git
-        GIT_TAG        v0.4.1  # You can specify a specific tag or commit
+        zeromq
+        GIT_REPOSITORY https://github.com/zeromq/libzmq.git
+        GIT_TAG        v4.3.5  # Укажите нужную версию
 )
 
+FetchContent_MakeAvailable(zeromq)
 
-# If cpp-modern-kafka has dependencies like librdkafka, fetch them as well
+# Загрузка и сборка cppzmq
 FetchContent_Declare(
-        RdKafka
-        GIT_REPOSITORY https://github.com/confluentinc/librdkafka.git
-        GIT_TAG        v2.6.1  # Specify the desired version
+        cppzmq
+        GIT_REPOSITORY https://github.com/zeromq/cppzmq.git
+        GIT_TAG        v4.8.0  # Укажите нужную версию
 )
 
-FetchContent_MakeAvailable(RdKafka)
-set(CPPKAFKA_BUILD_SHARED 0)
-set(RDKAFKA_BUILD_STATIC ON CACHE BOOL "")
-message(STATUS "${RdKafka_BINARY_DIR}")
-find_package(RdKafka ${FIND_PACKAGE_QUIET} CONFIG)
-set(RdKafka_DIR "C:\\Users\\MaxPlays\\CLionProjects\\labs_os2\\cmake-build-debug\\_deps\\rdkafka-build\\generated\\RdKafkaConfig.cmake")
-FetchContent_MakeAvailable(cpp-kafka)
+FetchContent_MakeAvailable(cppzmq)
+
 
 
 
@@ -38,8 +34,8 @@ add_executable(${PROJECT_NAME}_child src/child.cpp)
 
 add_dependencies(${PROJECT_NAME} ${PROJECT_NAME}_child)
 
-target_link_libraries(${PROJECT_NAME} ${PROJECT_NAME}_lib)
-target_link_libraries(${PROJECT_NAME}_child ${PROJECT_NAME}_lib)
+target_link_libraries(${PROJECT_NAME} ${PROJECT_NAME}_lib cppzmq)
+target_link_libraries(${PROJECT_NAME}_child ${PROJECT_NAME}_lib cppzmq)
 
 
 add_executable(${PROJECT_NAME}_tests tests/tests.cpp)
