@@ -4,45 +4,29 @@
 
 #include "Tree.h"
 
-Tree::Tree(): root(nullptr) {
-}
+void deleteSubtree(TreeNode *node) {
+    if (!node) return;
 
-void Tree::insert(int key) {
-    if (root == nullptr) {
-        root = new Node(key);
-    } else {
-        insert(root, key);
+    deleteSubtree(node->left);
+    deleteSubtree(node->right);
+
+    if (node->available && node->pid > 0) {
+        kill(node->pid, SIGTERM);
     }
+
+    delete node;
 }
 
-void Tree::inorder_traversal() {
-    inorder_traversal(root);
-    std::cout << std::endl;
-}
+TreeNode * deleteNodeById(TreeNode *root, int id) {
+    if (!root) return nullptr;
 
-void Tree::insert(Node * current, int key) {
-    if (current->left == nullptr) {
-        current->left = new Node(key);
-    } else if (current->right == nullptr) {
-        current->right = new Node(key);
-    } else {
-        if (get_size(current->left) <= get_size(current->right)) {
-            insert(current->left, key);
-        } else {
-            insert(current->right, key);
-        }
+    if (root->id == id) {
+        deleteSubtree(root);
+        return nullptr;
     }
-    current->size = 1 + get_size(current->left) + get_size(current->right);
-}
 
-int Tree::get_size(Node * node) {
-    return node ? node->size : 0;
-}
+    root->left = deleteNodeById(root->left, id);
+    root->right = deleteNodeById(root->right, id);
 
-void Tree::inorder_traversal(Node * current) {
-    if (current) {
-        inorder_traversal(current->left);
-        std::cout << current->key << " ";
-        inorder_traversal(current->right);
-    }
+    return root;
 }

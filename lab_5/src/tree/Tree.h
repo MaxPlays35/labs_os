@@ -4,31 +4,20 @@
 #pragma once
 
 #include <iostream>
+#include <signal.h>
 
-struct Node {
-    int key;
-    Node * left;
-    Node * right;
-    int size;
+struct TreeNode {
+    int id;
+    pid_t pid;
+    int port;
+    TreeNode* left;
+    TreeNode* right;
+    bool available;
 
-    explicit Node(int k) : key(k), left(nullptr), right(nullptr), size(1) {
-    }
+    TreeNode(int node_id, pid_t process_id, int node_port)
+        : id(node_id), pid(process_id), port(node_port), left(nullptr), right(nullptr), available(true) {}
 };
 
-class Tree {
-public:
-    Tree();
+void deleteSubtree(TreeNode* node);
 
-    void insert(int key);
-
-    void inorder_traversal();
-
-private:
-    Node * root;
-
-    void insert(Node * current, int key);
-
-    int get_size(Node * node);
-
-    void inorder_traversal(Node * current);
-};
+TreeNode* deleteNodeById(TreeNode* root, int id);
