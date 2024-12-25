@@ -5,8 +5,8 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_library(${PROJECT_NAME}_lib
-        src/simpleMemoryResource/SimpleMemoryResource.h
-        src/simpleMemoryResource/SimpleMemoryResource.cpp
+        src/freeMemoryResource/FreeMemoryResource.h
+        src/freeMemoryResource/FreeMemoryResource.cpp
         src/macMemoryResource/MacMemoryResource.h
         src/macMemoryResource/MacMemoryResource.cpp
         src/block/Block.h

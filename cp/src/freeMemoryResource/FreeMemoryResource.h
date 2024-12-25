@@ -16,7 +16,7 @@
 
 using Page = std::unique_ptr<char[]>;
 
-class SimpleMemoryResource : public BaseMemoryResource {
+class FreeMemoryResource : public BaseMemoryResource {
     static constexpr size_t max_size = 4096;
     std::vector<Block> blocks_;
     std::vector<Page> pages_;

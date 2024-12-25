@@ -2,12 +2,12 @@
 // Created by MaxPlays on 22/12/2024.
 //
 
-#include "SimpleMemoryResource.h"
+#include "FreeMemoryResource.h"
 
 #include <algorithm>
 #include <bits/ranges_algo.h>
 
-std::tuple<Block, size_t> SimpleMemoryResource::get_block(std::size_t bytes) {
+std::tuple<Block, size_t> FreeMemoryResource::get_block(std::size_t bytes) {
     for (std::size_t i = 0; i < blocks_.size(); ++i) {
         if (blocks_[i].get_used()) {
             continue;
@@ -24,7 +24,7 @@ std::tuple<Block, size_t> SimpleMemoryResource::get_block(std::size_t bytes) {
     return std::make_tuple(Block(0, bytes - 1, last_page + 1, true), blocks_.size());
 }
 
-void *SimpleMemoryResource::do_allocate(size_t bytes, size_t alignment) {
+void *FreeMemoryResource::do_allocate(size_t bytes, size_t alignment) {
     auto [block, idx] = get_block(bytes);
 
     if (idx == blocks_.size()) {
@@ -50,7 +50,7 @@ void *SimpleMemoryResource::do_allocate(size_t bytes, size_t alignment) {
     return pages_[block.get_page()].get() + block.get_start();;
 }
 
-void SimpleMemoryResource::do_deallocate(void * ptr, size_t bytes, size_t alignment) {
+void FreeMemoryResource::do_deallocate(void * ptr, size_t bytes, size_t alignment) {
     std::size_t idx = 0;
     bool found = false;
 
@@ -85,15 +85,15 @@ void SimpleMemoryResource::do_deallocate(void * ptr, size_t bytes, size_t alignm
     }
 }
 
-bool SimpleMemoryResource::do_is_equal(const std::pmr::memory_resource & other) const noexcept {
+bool FreeMemoryResource::do_is_equal(const std::pmr::memory_resource & other) const noexcept {
     return this == &other;
 }
 
-std::size_t SimpleMemoryResource::get_allocated_memory() const {
+std::size_t FreeMemoryResource::get_allocated_memory() const {
     return max_size * pages_.size();
 }
 
-std::size_t SimpleMemoryResource::get_used_memory() const {
+std::size_t FreeMemoryResource::get_used_memory() const {
     std::size_t used = 0;
 
     for (auto & block: blocks_) {
