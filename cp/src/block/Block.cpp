@@ -54,7 +54,7 @@ bool Block::get_used() const {
 }
 
 bool Block::operator==(const Block & other) const {
-    return start == other.start and end == other.end and page == other.end;
+    return start == other.start and end == other.end and page == other.page;
 }
 
 bool Block::operator<(const Block & other) const {

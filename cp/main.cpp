@@ -19,11 +19,11 @@ void benchmark(size_t iterations){
 
     std::ofstream file("data.txt", std::ios_base::app);
     auto [freeTime, freeUsedMemory] = measure_time([&freeAllocator, iterations](){
-      return benchmark_allocator<TestClass>(iterations, freeAllocator);
+      return simple_benchmark_allocator<TestClass>(iterations, freeAllocator);
     });
 
     auto [macTime, macUsedMemory] = measure_time([&macAllocator, iterations](){
-      return benchmark_allocator<TestClass>(iterations, macAllocator);
+      return simple_benchmark_allocator<TestClass>(iterations, macAllocator);
     });
 
     file << iterations << " ";
@@ -35,9 +35,13 @@ void benchmark(size_t iterations){
 int main(int argv, char** argc){
     {
         std::ofstream file("data.txt", std::ios_base::app);
-        file << "allocations timeSimple allocatedMemorySimple usedMemSimple timeTwin allocatedMemoryTwin usedMemTwin" << std::endl;
+        file << "allocations freeTime freeAllocatedMemory freeUsedMem macTime MacAllocatedMemory macUsedMem" << std::endl;
     }
-    for (auto i = 10; i < 5000; i+=10){
-        benchmark(i);
-    }
+    auto macAllocator = std::shared_ptr<BaseMemoryResource>(new MacMemoryResource());
+    auto freeAllocator = std::shared_ptr<BaseMemoryResource>(new FreeMemoryResource());
+    realistic_benchmark_allocator<char>(5000, freeAllocator);
+    // realistic_benchmark_allocator<char>(5000, freeAllocator);
+    // for (auto i = 10; i < 5000; i+=10){
+    //     benchmark(i);
+    // }
 }
